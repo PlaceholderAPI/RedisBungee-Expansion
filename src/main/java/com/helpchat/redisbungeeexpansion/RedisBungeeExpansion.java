@@ -55,8 +55,20 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
                 servers.put(s, 0);
             }
         }
-
-        return PlaceholderAPI.registerPlaceholderHook("redisbungee", this);
+        boolean registered = false;
+        try {
+            //for older version of papi support.
+            registered = PlaceholderAPI.registerPlaceholderHook("redisbungee", this);
+            if (!registered) {
+                System.out.println("Trying to use the new way of registering.............");
+                super.register();
+                registered = isRegistered();
+            }
+        } catch (NoSuchMethodError error) {
+            super.register();
+            registered = isRegistered();
+        }
+        return registered;
     }
 
     @Override
@@ -76,7 +88,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
 
     @Override
     public String getVersion() {
-        return "1.0.1";
+        return "2.0.1";
     }
 
     @Override
@@ -153,7 +165,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
 
                 getPlayers("ALL");
             }
-        }.runTaskTimer(getPlaceholderAPI(), 100L, 20L*fetchInterval);
+        }.runTaskTimer(getPlaceholderAPI(), 100L, 20L * fetchInterval);
     }
 
     @Override
