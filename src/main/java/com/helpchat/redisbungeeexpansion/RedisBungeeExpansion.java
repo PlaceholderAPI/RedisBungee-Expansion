@@ -3,13 +3,13 @@ package com.helpchat.redisbungeeexpansion;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.Cacheable;
 import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Taskable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -18,7 +18,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,7 +59,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
             //for older version of papi support.
             registered = PlaceholderAPI.registerPlaceholderHook("redisbungee", this);
             if (!registered) {
-                System.out.println("Trying to use the new way of registering.............");
+                PlaceholderAPIPlugin.getInstance().getLogger().warning("["+ getName() +"] Trying to use the new way of registering.............");
                 super.register();
                 registered = isRegistered();
             }
