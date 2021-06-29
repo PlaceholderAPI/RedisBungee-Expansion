@@ -54,7 +54,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
                 servers.put(s, 0);
             }
         }
-        boolean registered = false;
+        boolean registered;
         try {
             //for older version of papi support.
             registered = PlaceholderAPI.registerPlaceholderHook("redisbungee", this);
@@ -63,7 +63,10 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
                 super.register();
                 registered = isRegistered();
             }
+
         } catch (NoSuchMethodError error) {
+            /* this catches NoSuchMethodError, (registerPlaceholderHook())
+            since method might get deleted in any later release of papi */
             super.register();
             registered = isRegistered();
         }
