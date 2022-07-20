@@ -32,24 +32,18 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
 
     private final String CHANNEL = "legacy:redisbungee";
 
-    private int fetchInterval = 60;
-
-    private boolean registered = false;
+    private static final int FETCH_INTERVAL = 1; // in seconds
 
     public RedisBungeeExpansion() {
-        if (!registered) {
-            Bukkit.getMessenger().registerOutgoingPluginChannel(getPlaceholderAPI(), CHANNEL);
-            Bukkit.getMessenger().registerIncomingPluginChannel(getPlaceholderAPI(), CHANNEL, this);
-            registered = true;
-        }
+        Bukkit.getMessenger().registerOutgoingPluginChannel(getPlaceholderAPI(), CHANNEL);
+        Bukkit.getMessenger().registerIncomingPluginChannel(getPlaceholderAPI(), CHANNEL, this);
     }
 
     @Override
     public boolean register() {
 
         List<String> srvs = getStringList("tracked_servers");
-
-        if (srvs != null && !srvs.isEmpty()) {
+        if (!srvs.isEmpty()) {
             for (String s : srvs) {
                 servers.put(s, 0);
             }
@@ -74,7 +68,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
 
     @Override
     public String getVersion() {
-        return "2.0.1";
+        return "2.0.2";
     }
 
     @Override
@@ -125,7 +119,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
         }
 
         servers.put(identifier, 0);
-        return null;
+        return "0";
 
     }
 
@@ -151,7 +145,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
 
                 getPlayers("ALL");
             }
-        }.runTaskTimer(getPlaceholderAPI(), 100L, 20L * fetchInterval);
+        }.runTaskTimer(getPlaceholderAPI(), 100L, 20L * FETCH_INTERVAL);
     }
 
     @Override
@@ -159,7 +153,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
         if (task != null) {
             try {
                 task.cancel();
-            } catch (Exception ex) {
+            } catch (Exception ignored) {
             }
             task = null;
         }
@@ -168,11 +162,8 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
     @Override
     public void clear() {
         servers.clear();
-        if (registered) {
-            Bukkit.getMessenger().unregisterOutgoingPluginChannel(getPlaceholderAPI(), CHANNEL);
-            Bukkit.getMessenger().unregisterIncomingPluginChannel(getPlaceholderAPI(), CHANNEL, this);
-            registered = false;
-        }
+        Bukkit.getMessenger().unregisterOutgoingPluginChannel(getPlaceholderAPI(), CHANNEL);
+        Bukkit.getMessenger().unregisterIncomingPluginChannel(getPlaceholderAPI(), CHANNEL, this);
     }
 
     @Override
@@ -220,7 +211,7 @@ public final class RedisBungeeExpansion extends PlaceholderExpansion implements 
                 }
             }
 
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 }
